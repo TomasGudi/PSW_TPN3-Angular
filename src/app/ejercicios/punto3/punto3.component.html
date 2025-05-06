@@ -1,1 +1,55 @@
-<p>punto3 works!</p>
+<div class="container mt-4 text-center">
+  <h2>Juego del Ahorcado</h2>
+  <p class="lead">Categoría: <span class="fw-bold">{{ categoria }}</span></p>
+
+  <div class="row justify-content-center my-4">
+    <div class="col-md-6 col-lg-4">
+      <img [src]="imagenAhorcadoUrl" alt="Estado del ahorcado" class="img-fluid ahorcado-img mb-3">
+    </div>
+  </div>
+
+  <div class="palabra-mostrada my-3">
+    <span *ngFor="let letra of palabraMostrada" class="letra-espacio">
+      {{ letra }}
+    </span>
+  </div>
+
+  <p *ngIf="!juegoTerminado">Intentos restantes: {{ intentosRestantes }}</p>
+
+  <div *ngIf="!juegoTerminado" class="teclado my-4">
+    <button *ngFor="let letra of alfabeto"
+            class="btn btn-outline-primary m-1 letra-btn"
+            (click)="procesarLetra(letra)"
+            [id]="'btn-' + letra">
+      {{ letra }}
+    </button>
+  </div>
+
+  <div *ngIf="letrasErroneas.length > 0 && !juegoTerminado" class="my-3">
+    <p>Letras incorrectas: <span class="text-danger fw-bold">{{ letrasErroneas.join(', ') }}</span></p>
+  </div>
+
+  <button class="btn btn-success mt-3" (click)="iniciarJuego()">
+    Jugar de Nuevo
+  </button>
+
+  <!-- Modal para mostrar resultado -->
+  <div class="modal fade" id="resultadoModal" tabindex="-1" aria-labelledby="resultadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" [ngClass]="{'bg-success text-white': mensajeFinal.includes('¡Felicidades!'), 'bg-danger text-white': mensajeFinal.includes('¡Has perdido!')}">
+          <h5 class="modal-title" id="resultadoModalLabel">Resultado del Juego</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body fs-5">
+          {{ mensajeFinal }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="iniciarJuego()" data-bs-dismiss="modal">Jugar de Nuevo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

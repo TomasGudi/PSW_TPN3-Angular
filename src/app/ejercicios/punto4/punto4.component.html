@@ -1,0 +1,141 @@
+<div class="container mt-4">
+  <h2>Venta de Pasajes</h2>
+
+  <form [formGroup]="boletoForm" (ngSubmit)="registrarVenta()" class="mb-5 p-4 border rounded shadow-sm">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="dni" class="form-label">DNI del Pasajero</label>
+        <input type="text" id="dni" class="form-control" formControlName="dni" placeholder="Ej: 12345678">
+        <div *ngIf="boletoForm.get('dni')?.invalid && (boletoForm.get('dni')?.dirty || boletoForm.get('dni')?.touched)" class="text-danger small mt-1">
+          <div *ngIf="boletoForm.get('dni')?.errors?.['required']">El DNI es requerido.</div>
+          <div *ngIf="boletoForm.get('dni')?.errors?.['pattern']">El DNI debe tener 7 u 8 dígitos.</div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" formControlName="email" placeholder="nombre@ejemplo.com">
+        <div *ngIf="boletoForm.get('email')?.invalid && (boletoForm.get('email')?.dirty || boletoForm.get('email')?.touched)" class="text-danger small mt-1">
+          <div *ngIf="boletoForm.get('email')?.errors?.['required']">El email es requerido.</div>
+          <div *ngIf="boletoForm.get('email')?.errors?.['email']">Ingrese un email válido.</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="precioOriginal" class="form-label">Precio Base del Boleto ($)</label>
+        <input type="number" id="precioOriginal" class="form-control" formControlName="precioOriginal" placeholder="0.00" min="0.01" step="0.01">
+        <div *ngIf="boletoForm.get('precioOriginal')?.invalid && (boletoForm.get('precioOriginal')?.dirty || boletoForm.get('precioOriginal')?.touched)" class="text-danger small mt-1">
+          <div *ngIf="boletoForm.get('precioOriginal')?.errors?.['required']">El precio es requerido.</div>
+          <div *ngIf="boletoForm.get('precioOriginal')?.errors?.['min']">El precio debe ser mayor a 0.</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="categoriaTurista" class="form-label">Categoría de Turista</label>
+        <select id="categoriaTurista" class="form-select" formControlName="categoriaTurista">
+          <option [ngValue]="null" disabled>Seleccione una categoría...</option>
+          <option *ngFor="let cat of categoriasTurista" [value]="cat.id">{{ cat.nombre }}</option>
+        </select>
+        <div *ngIf="boletoForm.get('categoriaTurista')?.invalid && (boletoForm.get('categoriaTurista')?.dirty || boletoForm.get('categoriaTurista')?.touched)" class="text-danger small mt-1">
+          <div *ngIf="boletoForm.get('categoriaTurista')?.errors?.['required']">La categoría es requerida.</div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="fechaCompra" class="form-label">Fecha de Compra</label>
+        <input type="date" id="fechaCompra" class="form-control" formControlName="fechaCompra">
+        <div *ngIf="boletoForm.get('fechaCompra')?.invalid && (boletoForm.get('fechaCompra')?.dirty || boletoForm.get('fechaCompra')?.touched)" class="text-danger small mt-1">
+          <div *ngIf="boletoForm.get('fechaCompra')?.errors?.['required']">La fecha es requerida.</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="precioFinalCalculado !== null && boletoForm.get('precioOriginal')?.value && boletoForm.get('categoriaTurista')?.value" class="mt-3 p-3 bg-light border rounded">
+      <h5 class="mb-0">Precio Final a Pagar: <span class="text-success fw-bold">{{ precioFinalCalculado | currency:'ARS':'symbol':'1.2-2' }}</span></h5>
+    </div>
+
+    <div class="mt-4 text-end">
+      <button type="submit" class="btn btn-primary" [disabled]="boletoForm.invalid || precioFinalCalculado === null">
+        Registrar Venta
+      </button>
+    </div>
+  </form>
+
+  <hr>
+
+  <h3 class="mt-5">Boletos Vendidos</h3>
+  <div *ngIf="boletosVendidos.length === 0" class="alert alert-info">
+    Aún no se han registrado ventas.
+  </div>
+
+  <div *ngIf="boletosVendidos.length > 0" class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>DNI</th>
+          <th>Email</th>
+          <th>Categoría</th>
+          <th>Precio Base</th>
+          <th>Precio Final</th>
+          <th>Fecha Compra</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let boleto of boletosVendidos">
+          <td>{{ boleto.id }}</td>
+          <td>{{ boleto.dni }}</td>
+          <td>{{ boleto.email }}</td>
+          <td>
+            <span *ngIf="boleto.categoriaTurista === 1">Menor</span>
+            <span *ngIf="boleto.categoriaTurista === 2">Adulto</span>
+            <span *ngIf="boleto.categoriaTurista === 3">Jubilado</span>
+          </td>
+          <td>{{ boleto.precioOriginal | currency:'ARS':'symbol':'1.2-2' }}</td>
+          <td>{{ boleto.precioFinal | currency:'ARS':'symbol':'1.2-2' }}</td>
+          <td>{{ boleto.fechaCompra | date:'dd/MM/yyyy' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="mt-5">Resumen de Ventas</h3>
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center">
+        <div class="card-header">Menores</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ resumenVentas.menor.cantidad }}</h5>
+          <p class="card-text fw-bold">{{ resumenVentas.menor.total | currency:'ARS':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center">
+        <div class="card-header">Adultos</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ resumenVentas.adulto.cantidad }}</h5>
+          <p class="card-text fw-bold">{{ resumenVentas.adulto.total | currency:'ARS':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center">
+        <div class="card-header">Jubilados</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ resumenVentas.jubilado.cantidad }}</h5>
+          <p class="card-text fw-bold">{{ resumenVentas.jubilado.total | currency:'ARS':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center bg-primary text-white">
+        <div class="card-header">Total General</div>
+        <div class="card-body">
+          <h5 class="card-title">{{ resumenVentas.general.cantidad }}</h5>
+          <p class="card-text fw-bold">{{ resumenVentas.general.total | currency:'ARS':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+    </div>
+
+</div>
