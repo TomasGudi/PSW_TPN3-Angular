@@ -1,0 +1,20 @@
+.product-card {
+  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.product-image {
+  height: 200px; /* Ajusta la altura según tus imágenes */
+  object-fit: contain; /* 'cover' si quieres que llene el espacio, 'contain' para verla completa */
+  padding: 10px;
+}
+
+.btn.disabled-custom {
+  /* Estilos para el botón cuando el producto ya está en el carrito */
+  cursor: not-allowed;
+  /* Bootstrap ya aplica opacidad a los botones deshabilitados, pero puedes forzarla si es necesario */
+}

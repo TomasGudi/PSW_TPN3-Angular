@@ -1,0 +1,3 @@
+.text-muted-white {
+  color: rgba(255, 255, 255, 0.75) !important; /* Un color "muted" pero para fondo oscuro */
+}

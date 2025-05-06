@@ -1,0 +1,20 @@
+.slide-card {
+    /* Puedes definir una altura mínima si quieres que todas las cards tengan un tamaño similar
+       independientemente del contenido, aunque con flexbox se ajusta bien. */
+    /* min-height: 400px; */
+    overflow: hidden; /* Para asegurar que los bordes redondeados de la card se apliquen a la imagen si es necesario */
+  }
+  
+  .slide-image {
+    width: 100%;
+    height: 100%; /* Hace que la imagen intente llenar la altura de su contenedor (col-md-4) */
+    object-fit: cover; /* Escala la imagen para mantener su relación de aspecto mientras llena el contenedor, recortando si es necesario */
+  }
+  
+  /* Ajuste para que en pantallas pequeñas la imagen se muestre arriba y el texto abajo */
+  @media (max-width: 767.98px) {
+    .slide-image {
+      height: 250px; /* Altura fija para la imagen en móviles, ajusta según necesidad */
+      width: 100%;
+    }
+  }

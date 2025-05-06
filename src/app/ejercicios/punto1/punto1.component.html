@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Últimas Noticias</h2>
+
+  <!-- Slide de noticias: se oculta si no hay noticias -->
+  <div class="card shadow-sm slide-card" [hidden]="!noticias || noticias.length === 0">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img [src]="noticiaActual.img" class="card-img-top slide-image" alt="Imagen de la noticia: {{ noticiaActual.titulo }}">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ noticiaActual.titulo }}</h5>
+            <p class="card-text flex-grow-1">{{ noticiaActual.noticia }}</p>
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-primary" (click)="retrocederNoticia()" [disabled]="noticias.length <= 1">
+                  &laquo; Anterior
+                </button>
+                <span class="text-muted small">Noticia {{ noticiaActualIndex + 1 }} de {{ noticias.length }}</span>
+                <button class="btn btn-outline-primary" (click)="adelantarNoticia()" [disabled]="noticias.length <= 1">
+                  Siguiente &raquo;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Mensaje de "No hay noticias": se oculta si hay noticias -->
+  <div class="alert alert-info text-center" role="alert" [hidden]="noticias && noticias.length > 0">
+      No hay noticias disponibles en este momento.
+  </div>
+</div>
